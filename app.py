@@ -1,25 +1,25 @@
 from flask import Flask, jsonify, request
 
-app = Flask(__name__) ## Creo mi aplicacion
+app = Flask(__name__) ## Create app
 
 from products import products
 
-@app.route('/ping', methods=['GET'])  ## Ruta de prueba de respuesta del servidor
+@app.route('/', methods=['GET'])  ## Test server 
 def ping():
-    return jsonify({"message":"ping-PONG!"})
+    return jsonify({"message":"Server running OK"})
 
-@app.route('/products')
+@app.route('/products') ## Get all products 
 def get_products():
     return jsonify(products)
 
-@app.route('/products/<product_name>')
+@app.route('/products/<product_name>') ## Get product info
 def get_product(product_name):
-    product_found = [product for product in products if product['name'] == product_name]
-    if len(product_found) > 0 :
-        return jsonify(product_found[0])
+    productFound = [product for product in products if product['name'] == product_name]
+    if len(productFound) > 0 :
+        return jsonify(productFound[0])
     return jsonify({"message":"product unavailable"})
 
-@app.route('/products', methods = ['POST'])
+@app.route('/products', methods = ['POST']) ## Add new product
 def addProduct():
     new_product = {
         'name' : request.json['name'],
@@ -29,7 +29,7 @@ def addProduct():
     products.append(new_product)
     return jsonify({'message': "Product added", 'products':products})
 
-@app.route('/products/<product_name>', methods = ['PUT'])
+@app.route('/products/<product_name>', methods = ['PUT'])  ## Edit product info
 def editProduct(product_name):
     productFound = [product for product in products if product['name'] == product_name]
     if (len(productFound) > 0) :
@@ -41,5 +41,18 @@ def editProduct(product_name):
             'product updated':productFound[0]
         })
     return jsonify({"message":"product unavailable"})
-if __name__ == "__main__":  ## Inicio mi aplicacion y defino el puerto para el servidor
-    app.run(debug=True, port=2315)
+
+
+@app.route('/products/<product_name>', methods = ['DETELE'])  ## Delete product
+def deleteProduct(product_name):
+    productFound = [product for product in products if product['name'] == product_name]
+    if (len(productFound) > 0):
+        products.remove(productFound[0])
+        return jsonify({
+            'message': 'Product deleted',
+            'products': products
+        })
+    return jsonify({"message":"product unavailable"})
+
+if __name__ == "__main__":  ## Starting app and setting port
+    app.run(debug=True, port=5000)
