@@ -43,7 +43,7 @@ def editProduct(product_name):
     return jsonify({"message":"product unavailable"})
 
 
-@app.route('/products/<product_name>', methods = ['DETELE'])  ## Delete product
+@app.route('/products/<product_name>', methods = ['DELETE'])  ## Delete product
 def deleteProduct(product_name):
     productFound = [product for product in products if product['name'] == product_name]
     if (len(productFound) > 0):
